@@ -40,21 +40,28 @@ public class Bst {
 		}
 	}
 
+	public void insert(int i) {
+		insert(i,root);
+	}
+
 	public Node find(int i, Node n) {
 		if (n == null)
 			return null;
 		else {
 			if(n.getVal() > i) {
-				find(i,n.getLeft());
+				return find(i,n.getLeft());
 			}
 			else if (n.getVal() < i) {
-				find(i,n.getRight());
+				return find(i,n.getRight());
 			}
 			else {
 				return n;
 			}
 		}
-		return null;
+	}
+
+	public Node find(int i) {
+		return find(i,root);
 	}
 
 	public Node findParent(int i, Node n) {
@@ -66,29 +73,55 @@ public class Bst {
 				if (n.getLeft().getVal() == i) {
 					return n;
 				}
-				else findParent(i,n.getLeft());
+				else return findParent(i,n.getLeft());
 			}
 			else if(n.getVal() < i) {
 				if(n.getRight().getVal() == i) {
 					return n;
 				}
-				else findParent(i,n.getRight());
+				else return findParent(i,n.getRight());
 			}
 			else return null;
 		}
 	}
 
-	public void remove(int i) {
-		Node t = find(i,root);
-		if (n == null)
-			return;
-		else if (n.getVal() > i) {
-			//left
-		}
-		else if (n.getVal() < i) {
-			//right
-		}
+	public Node findParent(int i) {
+		return findParent(i,root);
+	}
 
+	public void remove(int i, Node n) {
+		Node t = find(i,root);
+		if (t == null) {
+			System.out.print("didn't find " + i);
+			return;
+		}
+		else if (t.getRight() != null && t.getLeft() != null) {
+			Node pred = findMaxLeft(t.getLeft());
+			t.setVal(pred.getVal());
+			remove(pred.getVal(),t.getLeft());
+		}
+		else if (t.getRight() == null && t.getLeft() != null) {
+			t = t.getLeft();
+			return;
+		}
+		else if (t.getRight() != null && t.getLeft() == null) {
+			t = t.getRight();
+			return;
+		}
+		else {
+			t = null;
+			return;
+		}
+	}
+
+	public void remove(int i) {
+		remove(i,root);
+	}
+
+	public Node findMaxLeft(Node n) {
+		if (n.getRight() != null)
+			return findMaxLeft(n.getRight());
+		else return n;
 	}
 
 	public void printTree(Node n) {
@@ -109,11 +142,15 @@ public class Bst {
 		t.insert(0,t.root);
 		t.insert(3,t.root);
 		t.printTree(t.root);
-		Node temp = t.find(0);
-		System.out.print("Finding 0..");
+		System.out.println("");
+		Node temp = t.find(0,t.root);
+		System.out.println("Finding 0..");
 		if (temp != null) {
-			System.out.print("found 0!");
+			System.out.println("found 0!");
 		}
+		System.out.println("Removing 2...");
+		t.remove(2,t.root);
+		t.printTree(t.root);
 	}
 }
 
