@@ -39,7 +39,9 @@ public class List {
 				return itr.getCurr();
 			}
 			else {
-				itr.moveForward();
+				if(itr.getCurr().getNext() != null)
+					itr.moveForward();
+				else return null;
 			}
 		}
 		return null;
@@ -53,8 +55,11 @@ public class List {
 				return parent.getCurr();
 			}
 			else {
-				itr.moveForward();
-				parent.moveForward();
+				if(itr.getCurr().getNext() != null) {
+					itr.moveForward();
+					parent.moveForward();
+				}
+				else return null;
 			}
 		}
 		return null;
@@ -86,5 +91,9 @@ public class List {
 		System.out.println("Removing 2..");
 		l.remove(2);
 		l.printList();
+		temp = l.find(5);
+		if(temp == null)
+			System.out.println("couldn't find 5");
+		
 	}	
 }
