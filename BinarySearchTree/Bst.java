@@ -89,33 +89,139 @@ public class Bst {
 		return findParent(i,root);
 	}
 
-	public void remove(int i, Node n) {
-		Node t = find(i,root);
-		if (t == null) {
-			System.out.print("didn't find " + i);
-			return;
+	public Node findParent(Node n, Node r) {
+		if (n == root) {
+			return null;
 		}
-		else if (t.getRight() != null && t.getLeft() != null) {
-			Node pred = findMaxLeft(t.getLeft());
-			t.setVal(pred.getVal());
-			remove(pred.getVal(),t.getLeft());
+		if (r == null) {
+			return null;
 		}
-		else if (t.getRight() == null && t.getLeft() != null) {
-			t = t.getLeft();
-			return;
-		}
-		else if (t.getRight() != null && t.getLeft() == null) {
-			t = t.getRight();
-			return;
-		}
+		else if (r.getRight() != null && r.getRight() == n) 
+			return r;
+		else if (r.getLeft() != null && r.getLeft() == n) 
+			return r;
 		else {
-			t = null;
-			return;
+			if (r.getVal() > n.getVal()) {
+				return findParent(n,r.getLeft());
+			}
+			else return findParent(n,r.getRight());
 		}
+	}
+	public Node findParent(Node n) {
+		return findParent(n,root);
+	}
+
+	public void remove(int i, Node n) {
+		Node r = find(i,n);
+		if(r != null) {
+			Node p = findParent(r);
+		if (p != null) {
+			boolean isLeft = false;
+			if (p.getLeft() == r) {
+				isLeft = true;
+			}
+			if (r.getRight() == null && r.getLeft() == null) {
+				if (!isLeft) {
+					p.setRight(null);
+				}
+				else p.setLeft(null);
+				return;
+			}
+			else if (r.getRight() == null && r.getLeft() != null) {
+				if (!isLeft) {
+					p.setRight(r.getLeft());
+					return;
+				}
+				else p.setLeft(r.getLeft());
+				return;
+			}
+			else if (r.getRight() != null && r.getLeft() == null) {
+				if (!isLeft) {
+					p.setRight(r.getRight());
+					return;
+				}
+				else p.setLeft(r.getRight());
+				return;
+			}
+			else {
+				Node succ = findMaxLeft(r.getLeft());
+				remove(succ);
+				r.setVal(succ.getVal());
+				return;
+			}
+		}
+		
+		else {
+			if(r != null) {
+				if (r.getRight() == null && r.getLeft() == null) {
+					r = null;
+					return;
+				}
+				else if (r.getRight() == null && r.getLeft() != null) {
+					r = r.getLeft();
+					return;
+				}
+				else if (r.getRight() != null && r.getLeft() == null) {
+					r = r.getRight();
+					return;
+				}
+				else {
+					Node succ = findMaxLeft(r.getLeft());
+					
+					remove(succ);
+					r.setVal(succ.getVal());
+				}
+				return;
+			}
+		}
+		return;
+	}
+		return;
 	}
 
 	public void remove(int i) {
 		remove(i,root);
+	}
+
+	public void remove(Node n) {
+		if (n!=null) {
+			boolean isLeft = false;
+			Node p = findParent(n);
+			if (p != null) {
+				if (p.getLeft() == n) {
+					isLeft = true;
+				}
+				if (n.getRight() == null && n.getLeft() == null) {
+					if (!isLeft) {
+						p.setRight(null);
+					}
+					else p.setLeft(null);
+					return;
+				}
+				else if (n.getRight() == null && n.getLeft() != null) {
+					if (!isLeft) {
+						p.setRight(n.getLeft());
+						return;
+					}
+					else p.setLeft(n.getLeft());
+					return;
+				}
+				else if (n.getRight() != null && n.getLeft() == null) {
+					if (!isLeft) {
+						p.setRight(n.getRight());
+						return;
+					}
+					else p.setLeft(n.getRight());
+					return;
+				}
+				else {
+					Node succ = findMaxLeft(n.getLeft());
+					remove(succ);
+					n.setVal(succ.getVal());
+					return;
+				}
+			}
+		}
 	}
 
 	public Node findMaxLeft(Node n) {
@@ -136,7 +242,9 @@ public class Bst {
 	public static void main(String[] args) {
 		Bst t = new Bst();
 		t.insert(5,t.root);
+		t.insert(7,t.root);
 		t.insert(6,t.root);
+		t.insert(8,t.root);
 		t.insert(1,t.root);
 		t.insert(2,t.root);
 		t.insert(0,t.root);
@@ -148,8 +256,14 @@ public class Bst {
 		if (temp != null) {
 			System.out.println("found 0!");
 		}
+		System.out.println("Removing 1...");
+		t.remove(1);
+		t.printTree(t.root);
 		System.out.println("Removing 2...");
 		t.remove(2,t.root);
+		t.printTree(t.root);
+		System.out.println("Removing 5...");
+		t.remove(5);
 		t.printTree(t.root);
 	}
 }
